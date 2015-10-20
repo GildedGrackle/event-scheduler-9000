@@ -24,7 +24,7 @@
 (def site-handler site-routes)
 
 (defroutes api-routes
-  (POST "/api/event" [] {:status 200 :body {:some "garbage"}}))
+  (POST "/api/event" {body :body} {:status 200 :body body}))
 
 (def api-handler
   (-> (wrap-defaults api-routes api-defaults)
