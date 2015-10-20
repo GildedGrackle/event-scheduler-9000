@@ -1,28 +1,48 @@
 (ns event-planner.server
   (:require [clojure.java.io :as io]
             [event-planner.dev :refer [is-dev? inject-devmode-html browser-repl start-figwheel]]
-            [compojure.core :refer [GET defroutes]]
+            [event-planner.api :refer :all]
+            [compojure.core :refer [GET POST defroutes routes]]
             [compojure.route :refer [resources]]
             [net.cgrand.enlive-html :refer [deftemplate]]
             [net.cgrand.reload :refer [auto-reload]]
             [ring.middleware.reload :as reload]
             [ring.middleware.defaults :refer [wrap-defaults api-defaults]]
             [environ.core :refer [env]]
+            [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
             [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
 
 (deftemplate page (io/resource "index.html") []
   [:body] (if is-dev? inject-devmode-html identity))
 
-(defroutes routes
+(defroutes site-routes
   (resources "/")
   (resources "/react" {:root "react"})
   (GET "/*" req (page)))
 
-(def http-handler
+(def site-handler site-routes)
+
+(defroutes api-routes
+  (POST "/api/event" [] {:status 200 :body {:some "garbage"}}))
+
+(def api-handler
+  (-> (wrap-defaults api-routes api-defaults)
+      wrap-json-body
+      wrap-json-response))
+
+(defn wrap-is-dev
+  [handler]
   (if is-dev?
-    (reload/wrap-reload (wrap-defaults #'routes api-defaults))
-    (wrap-defaults routes api-defaults)))
+    (reload/wrap-reload handler)
+    handler))
+
+(def http-handler
+  (->
+   (routes api-handler site-handler)
+   wrap-is-dev))
+
+
 
 (defn run-web-server [& [port]]
   (let [port (Integer. (or port (env :port) 10555))]
