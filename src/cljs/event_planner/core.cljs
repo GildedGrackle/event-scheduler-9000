@@ -1,17 +1,24 @@
 (ns event-planner.core
-  (:require [om.core :as om :include-macros true]
-            [om.dom :as dom :include-macros true]))
+  (:require [reagent.core :as r]
+            [re-frame.core :refer [register-handler
+                                   path
+                                   register-sub
+                                   dispatch
+                                   dispatch-sync
+                                   subscribe]]))
 
-(enable-console-print!)
+(defn simple-component []
+  [:div
+   [:p "I am a component!"]
+   [:p.someclass
+    "I have " [:strong "bold"]
+    [:span {:style {:color "red"}} " and red "] "text."]])
 
-(defonce app-state (atom {:text "Hello Chestnut!"}))
+(defn render-simple []
+  (r/render-component [simple-component]
+                      (js/document.getElementById "app")))
 
-(defn main []
-  (om/root
-    (fn [app owner]
-      (reify
-        om/IRender
-        (render [_]
-          (dom/h1 nil (:text app)))))
-    app-state
-    {:target (. js/document (getElementById "app"))}))
+(defn ^:export main
+  []
+  (dispatch-sync [:initialize])
+  (render-simple))

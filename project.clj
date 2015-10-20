@@ -14,7 +14,8 @@
                  [ring/ring-defaults "0.1.4"]
                  [compojure "1.3.2"]
                  [enlive "1.1.6"]
-                 [org.omcljs/om "0.8.8"]
+                 [reagent "0.5.1"]
+                 [re-frame "0.5.0-alpha1"]
                  [environ "1.0.0"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
