@@ -18,7 +18,9 @@
                  [re-frame "0.5.0-alpha1"]
                  [environ "1.0.0"]
                  [ring/ring-json "0.4.0"]
-                 [cljs-ajax "0.3.0"]]
+                 [cljs-ajax "0.3.0"]
+                 [secretary "1.2.3"]
+                 [kibu/pushy "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-environ "1.0.0"]]

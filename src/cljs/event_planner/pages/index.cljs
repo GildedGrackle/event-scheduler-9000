@@ -27,8 +27,9 @@
 (register-handler
  :event-response
  (fn
-   [db [_ data]]
-   (assoc db :data data)))
+   [db [_ event]]
+   (let [event-id (:id event 1)]
+     (assoc-in db [:events event-id] event))))
 
 ;; Subscriptions on database
 
@@ -39,10 +40,10 @@
    (reaction (:clicks @db))))
 
 (register-sub
- :data
+ :event
  (fn
-   [db _]
-   (reaction (:data @db))))
+   [db [_ id]]
+   (reaction (get-in @db [:events id]))))
 
 
 (def days ["Sunday"
@@ -87,15 +88,14 @@
 
 
 (defn index-page []
-  (let [clicks (subscribe [:clicks])
-        data (subscribe [:data])]
+  (let [clicks (subscribe [:clicks])]
     [:div
      [:p "I am a component!"]
      [:p "I have so many clicks: " @clicks]
-     [:p "Look at this sick data: " @data]
      [:p.someclass
       "I have " [:em "bold"]
       [:span {:style {:color "red"}} " and red "] "text."]
      [:button {:type "button"
                :on-click #(dispatch [:clicked])} "Click Me!"]
+     [:a {:href "/events/1"} "Event 1"]
      [recurring-event-form]]))
