@@ -18,7 +18,7 @@
  :initialize
  (fn
    [db _]
-   {}))
+   (or db {})))
 
 (register-handler
  :change-page
@@ -48,11 +48,11 @@
           [:span.icon-bar]
           [:span.icon-bar]
           [:span.icon-bar]]
-          [:a.navbar-brand {:href "#"} "Schedule-Omatic 9000"]]
+          [:a.navbar-brand {:href "/"} "Schedule-Omatic 9000"]]
       [:div {:class "collapse navbar-collapse"
              :id "navbar"}
         [:ui.nav.navbar-nav.navbar-right
-          [:li [:a {:href "#"} "Home"]]
+          [:li [:a {:href "/"} "Home"]]
           [:li [:a {:href "#"}"About Us"]]
           [:li [:a {:href "#"} "Login"]]
           ]]]])

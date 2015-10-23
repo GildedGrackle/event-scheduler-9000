@@ -1,6 +1,36 @@
 
-$navbar-default-bg: #312312;
+$base-color: teal;
+$ouline-color: darken( $base-color, 5%);
+
+$navbar-default-bg: $base-color;
 $light-orange: #ff8c00;
-$navbar-default-color: teal;
+$navbar-default-link-color: black;
+$navbar-default-link-hover-color: black;
+$navbar-default-bg: $base-color;
+$navbar-height: 80px;
+$navbar-default-border: $ouline-color;
+$navbar-default-link-hover-bg: $base-color;
+$navbar-default-toggle-border-color: darken( $base-color, 12%);
+$navbar-default-toggle-icon-bar-bg: darken( $base-color, 12%);
+$navbar-default-toggle-hover-bg: lighten( $base-color, 7%);
 
 @import "bootstrap";
+
+.navbar-default .navbar-brand {
+   font-family: "Lobster Two", italic;
+   color: black;
+   font-size: 2.5em;
+}
+
+.navbar-nav a {
+  font-size: 1em;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+
+.form-signin {
+  max-width: 380px;
+  margin: 0 auto;
+  background-color: #fff;
+}
