@@ -18,7 +18,7 @@
  :initialize
  (fn
    [db _]
-   {}))
+   (or db {})))
 
 (register-handler
  :change-page
