@@ -23,7 +23,11 @@
                  [kibu/pushy "0.3.6"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
-            [lein-environ "1.0.0"]]
+            [lein-environ "1.0.0"]
+            [lein-sassy "1.0.7"]]
+
+  :sass {:src "resources/app/stylesheets"
+         :dst "resources/public/css"}
 
   :min-lein-version "2.5.0"
 
