@@ -34,14 +34,42 @@
 (def pages {:index index-page
             :events events-page})
 
+(defn header-component []
+    [:nav {:class "navbar navbar-default navbar-static-top"
+          :role "navigation"}
+      [:div.container
+        [:div.navbar-header
+        [:button {:type "button"
+                  :class "navbar-toggle collapsed"
+                  :data-toggle "collapse"
+                  :data-target "#navbar"
+                  :aria-expanded "false"}
+          [:span.sr-only "Toggle navigation"]
+          [:span.icon-bar]
+          [:span.icon-bar]
+          [:span.icon-bar]]
+          [:a.navbar-brand {:href "#"} "Schedule-Omatic 9000"]]
+      [:div {:class "collapse navbar-collapse"
+             :id "navbar"}
+        [:ui.nav.navbar-nav.navbar-right
+          [:li [:a {:href "#"} "Home"]]
+          [:li [:a {:href "#"}"About Us"]]
+          [:li [:a {:href "#"} "Login"]]
+          ]]]])
+
 (defn root-component []
   (let [current-page (subscribe [:current-page])
         page-component (pages (first current-page) index-page)]
     ;return page + args in current-page
     (into [page-component] (rest current-page))))
 
+(defn wrapper-component []
+  [:div
+   [header-component]
+   [root-component]])
+
 (defn render []
-  (r/render-component [root-component]
+  (r/render-component [wrapper-component]
                       (js/document.getElementById "app")))
 
 (defn ^:export main
