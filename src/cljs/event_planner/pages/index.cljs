@@ -1,6 +1,7 @@
 (ns event-planner.pages.index
   (:require-macros [reagent.ratom :refer [reaction]])
   (:require [reagent.core :as r]
+            [reagent-forms.core :refer [bind-fields]]
             [ajax.core :refer [GET POST]]
             [re-frame.core :refer [register-handler
                                    path
@@ -25,37 +26,54 @@
            "Saturday"])
 
 ;; Views
-(defn checkbox
-  [val name]
-  [:input {:type "checkbox" :value val} name])
-
 (defn drop-down
-  [vals]
-  [:select
+  [vals id]
+  [:select.form-control {:field :list :id id}
    (for [[key name] vals]
-     [:option {:value key} name])])
+     [:option {:key key} name])])
 
 (defn military->12h [hour]
-  (if (> hour 12)
-    (str (- hour 12) " pm")
-    (str hour " am")))
+  (cond
+    (= hour 0) "12 am"
+    (< hour 12) (str hour " am")
+    (= hour 12) "12 pm"
+    (> hour 12) (str (- hour 12) " pm")))
 
-;; FIXME time is hard
 (defn time-drop-down
-  []
-  (let [hours (map inc (range 24))]
-    [drop-down (map vector
-                    hours
-                    (map military->12h hours))]))
+  [id]
+  (let [hours (concat (drop 1 (range 24)) (take 1 (range 24)))
+        hour-names (map (comp military->12h) hours)]
+    (drop-down (map vector hours hour-names) id)))
+
+(def recurring-event-form-template
+  [:div
+   [:div.form-group
+    [:label "Title:"] [:input {:field :text :id :title}]]
+   [:div.form-group
+    [:label "Days of Week:"]
+    [:div.btn-group {:field :multi-select :id :days}
+     (for [day days]
+       [:button.btn.btn-default {:key day}
+        [:span (first day)]])]]
+   [:div.form-group
+    [:label "Start Time:"] (time-drop-down :start-time)]
+   [:div.form-group
+    [:label "End Time:"] (time-drop-down :end-time)]])
 
 (defn recurring-event-form
   []
-  [:form
-   "Title:" [:input {:type "text"}]
-   "Days of Week:" (for [day days] [checkbox "help" day])
-   "Start Time:" [time-drop-down]
-   "End Time:" [time-drop-down]])
-
+  (let [doc (r/atom {:title "Your Event!"
+                     :days (remove #{"Saturday" "Sunday"} days)
+                     :start-time 9
+                     :end-time 17})]
+    (fn []
+      [:div
+       [bind-fields
+        recurring-event-form-template
+        doc]
+       [:button {:type "button"
+                 :on-click #(.log js/console (pr-str @doc))}
+        "Create Event"]])))
 
 (defn index-page []
   (let []
