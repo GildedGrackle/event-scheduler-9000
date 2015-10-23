@@ -10,41 +10,11 @@
                                    subscribe]]))
 
 (register-handler
- :clicked
- (fn
-   [db _]
-   (POST "/api/event"
-         {:handler #(dispatch [:event-response %1])
-          :error-handler #(dispatch [:event-response %1])
-          :format :json
-          :params {:recurring true
-                   :title "Some Time in the Future"
-                   :days-of-week ["Monday"]
-                   :start-time 9
-                   :end-time 17}})
-   (update-in db [:clicks] inc)))
-
-(register-handler
  :event-response
  (fn
    [db [_ event]]
    (let [event-id (:id event 1)]
      (assoc-in db [:events event-id] event))))
-
-;; Subscriptions on database
-
-(register-sub
- :clicks
- (fn
-   [db _]
-   (reaction (:clicks @db))))
-
-(register-sub
- :event
- (fn
-   [db [_ id]]
-   (reaction (get-in @db [:events id]))))
-
 
 (def days ["Sunday"
            "Monday"
@@ -88,14 +58,7 @@
 
 
 (defn index-page []
-  (let [clicks (subscribe [:clicks])]
+  (let []
     [:div
-     [:p "I am a component!"]
-     [:p "I have so many clicks: " @clicks]
-     [:p.someclass
-      "I have " [:em "bold"]
-      [:span {:style {:color "red"}} " and red "] "text."]
-     [:button {:type "button"
-               :on-click #(dispatch [:clicked])} "Click Me!"]
      [:a {:href "/events/1"} "Event 1"]
      [recurring-event-form]]))
