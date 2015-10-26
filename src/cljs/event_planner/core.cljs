@@ -3,6 +3,7 @@
   (:require [reagent.core :as r]
             [event-planner.pages.index :refer [index-page]]
             [event-planner.pages.events :refer [events-page]]
+            [event-planner.pages.about-us :refer [about-us-page]]
             [ajax.core :refer [GET POST]]
             [re-frame.core :refer [register-handler
                                    path
@@ -32,7 +33,8 @@
    (:current-page @db)))
 
 (def pages {:index index-page
-            :events events-page})
+            :events events-page
+            :about-us about-us-page})
 
 (defn header-component []
     [:nav {:class "navbar navbar-default navbar-static-top"
@@ -82,6 +84,9 @@
 
 (defroute event-path "/events/:id" [id]
   (dispatch [:change-page :events id]))
+
+(defroute event-path "/about-us" []
+  (dispatch [:change-page :about-us]))
 
 (secretary/set-config! :prefix "/")
 (def history (pushy/pushy secretary/dispatch!
